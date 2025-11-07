@@ -6,6 +6,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "dependencies": {
     "@types/express": "^5.0.0",
     "dotenv": "^17.2.3",
@@ -14,6 +17,8 @@
     "pnpm": "^10.20.0"
   },
   "devDependencies": {
-    "@types/node": "^22.19.0"
+    "@types/node": "^22.19.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
