@@ -20,7 +20,7 @@ router.post("/add", async (req, res) => {
 
 
     let user = await userModules.findOne({ email });
-    if(user) return res.status(400).send({ msg: "User Already Exists !!" });
+    if(user) return res.status(401).send({ msg: "User Already Exists !!" });
 
     user = new userModules({ username, password, email, role });
     await user.save();
