@@ -11,7 +11,8 @@ router.post("/add", async (req, res) => {
     if (!username) return res.status(400).send({ msg: "No Username !!" });
     if (!password) return res.status(400).send({ msg: "No Password !!" });
 
-    const user = await userModules.create({ username, password });
+    const user = await userModules.create({ username, password});
+    
     return res.status(200).send({ msg: `User Created with name ${user.username}!!` });
   } catch (err) {
     console.error(err);

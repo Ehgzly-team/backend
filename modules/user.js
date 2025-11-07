@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
   _id: { type: String },
   username: { type: String },
   password: { type: String },
+  role: { 
+    type: String, 
+    enum: ["owner", "user"], 
+    default: "user"
+  }
 });
 
 // This runs before saving a new user
@@ -27,6 +32,12 @@ userSchema.pre("save", async function (next) {
     next(err);
   }
 });
+
+//this function check if user owner or not
+userSchema.methods.isOwner = function () {
+  return this.role === 'owner';
+};
+
 
 const User = mongoose.model("Users", userSchema);
 export default User;
