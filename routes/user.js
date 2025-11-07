@@ -5,13 +5,20 @@ const router = express.Router();
 
 router.post("/add", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, email, role} = req.body;
 
     if (!req.body) return res.status(400).send({ msg: "No Body Sent !!" });
     if (!username) return res.status(400).send({ msg: "No Username !!" });
     if (!password) return res.status(400).send({ msg: "No Password !!" });
+    if (!email) return res.status(400).send({ msg: "No Email !!" });
+    if (!role) return res.status(400).send({ msg: "No Role !!" });
 
-    const user = await userModules.create({ username, password});
+
+    let user = await userModules.findOne({ email });
+    if(user) return res.status(400).send({ msg: "User Already Exists !!" });
+
+    user = new userModules({ username, password, email, role });
+    await user.save();
     
     return res.status(200).send({ msg: `User Created with name ${user.username}!!` });
   } catch (err) {

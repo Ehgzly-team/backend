@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema({
     type: String, 
     enum: ["owner", "user"], 
     default: "user"
-  }
+  },
+  email: { type: String },
+  favorites: { type: Array, default: [] },
+  bookings: { type: Array, default: [] },
 });
 
 // This runs before saving a new user
