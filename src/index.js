@@ -19,7 +19,7 @@ connectDB();
 
 // Home route
 app.get("/", (req, res) => {
-  res.send({ msg: "Hello Dude 32" });
+  res.send({ msg: "Hello Dude" });
 });
 
 // Start listening

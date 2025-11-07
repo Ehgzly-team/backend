@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const connectDB = async () => {
   try {
-    // 🔹 Replace with your MongoDB connection string
-    await mongoose.connect("mongodb+srv://devo:38Jo7UeYfaqNFPKj@cluster0.yboj4nz.mongodb.net/testing?appName=Cluster0", {
+    await mongoose.connect(process.env.MONGO_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -11,6 +13,7 @@ const connectDB = async () => {
     console.log("✅ MongoDB Connected Successfully");
   } catch (err) {
     console.error("❌ MongoDB Connection Error:", err);
+    process.exit(1);
   }
 };
 
