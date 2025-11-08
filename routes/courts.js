@@ -13,6 +13,9 @@ admin.initializeApp({credential:admin.credential.cert(serviceAccount),
   storageBucket:'ehgzly-76270.appspot.com'
 });
 
+const bucket =getStorage().bucket();
+const upload = multer({dest:"upload/"})
+
 const router = express.Router();
 
 router.get("/pagination", async (req, res) => {
