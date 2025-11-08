@@ -24,43 +24,7 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 const router = express.Router();
-
-Excellent question 👏 — yes, you can upload images to Firebase Storage from a Node.js server without using multer.
-This is useful when:
-
-You’re receiving base64 data or raw binary from your frontend (e.g., Flutter, React, etc.),
-
-Or you just want a cleaner approach without temporary files.
-
-
-Let’s go step-by-step 👇
-
-
----
-
-🧱 Step 1: Setup Firebase Admin SDK
-
-Same as before.
-
-Install:
-
-npm install firebase-admin express
-
-Setup your Firebase app (server.js or index.js):
-
-import express from 'express';
-import admin from 'firebase-admin';
-import { getStorage } from 'firebase-admin/storage';
-import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
-
-// Initialize Firebase
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: 'your-project-id.appspot.com'
-});
-
 const bucket = getStorage().bucket();
-const app = express();
 
 
 app.post('/upload', async (req, res) => {
