@@ -13,29 +13,6 @@ admin.initializeApp({credential:admin.credential.cert(serviceAccount),
   storageBucket:'ehgzly-76270.appspot.com'
 });
 
-const bucket =getStorage().bucket();
-const upload = multer({dest:"upload/"})
-
-const router = express.Router();
-
-router.post("/uploadImg",upload.single('image'),async(req,res)=>{
-  try{
-    if(!req.file)return res.status(400).json({msg:"no file uploaded"});
-
-    const uploadResult = await bucket.upload(req.file.path,{
-      destination:`images/${req.file.originalname}`,
-      public:true,
-      metadata:{contentType:req.file.mimetype}
-    });
-    const file =uploadResult[0];
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
-
-    res.json({url:publicUrl});
-  }catch(err){
-    console.log(err);
-    res.status(500).send('Error uploading file');
-  }
-});
 
 router.get("/pagination", async (req, res) => {
   query = {};
