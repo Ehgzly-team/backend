@@ -5,6 +5,7 @@ import connectDB from "../config/db.js";
 import userRoutes from "../routes/user.js";
 import courtRoutes from "../routes/courts.js";
 import cors from 'cors';
+import { logger } from "../middlewares/logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,10 +15,11 @@ const app = express();
 
 // APP Uses
 app.use(express.json());
+app.use(logger)
 app.use(express.json({ limit: '10mb' })); // increase limit if needed
 app.use(express.raw({ type: 'image/*', limit: '10mb' }));
-app.use("/api/users", userRoutes); // base of all users routes
 app.use("/api/courts", courtRoutes); // base of all courts routes
+app.use("/api/users", userRoutes); // base of all users routes
 app.use(cors({
   origin: '*' 
 }));

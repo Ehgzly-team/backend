@@ -64,6 +64,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/me", authenticateToken, (req, res) => {
+  console.log("/me");
   res.json({
     id: req.user.id,
     username: req.user.username,

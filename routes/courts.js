@@ -59,8 +59,9 @@ router.get("/pagination", async (req, res) => {
 });
 
 router.post("/pagination/mycourts",authenticateToken, async (req, res) => {
+  console.log("test");
   const user = await userModules.findOne({_id:req.user.id})
-  query = {_id :{$in:user.bookings}};
+  query = {_id :{$in:user.owned_courts}};
   const {page,limit,type}=req.body;
   if (type != "all") {
     query["type"] = type;
@@ -69,9 +70,9 @@ router.post("/pagination/mycourts",authenticateToken, async (req, res) => {
   const skip = (page-1)*limit;
   const courts = await courtModules.find(query).skip(skip).limit(limit);
 
-  res.json({data:courts})}
+  res.status(200).json({data:courts})}
   else{
-    res.json({data:[]});
+    res.status(200).json({data:[]});
   }
 });
 
