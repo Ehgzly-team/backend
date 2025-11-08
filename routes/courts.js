@@ -24,7 +24,6 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 const router = express.Router();
-const bucket = getStorage().bucket();
 
 
 app.post('/upload', async (req, res) => {
