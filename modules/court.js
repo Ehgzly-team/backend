@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import Counter from "./counter.js";
 
 const courtSchema = new mongoose.Schema({
     _id: { type: String },
@@ -42,9 +42,7 @@ const courtSchema = new mongoose.Schema({
     }
 });
 
-
-
-// This runs before saving a new user
+// This runs before saving a new court
 courtSchema.pre("save", async function (next) {
   if (!this.isNew) return next();
 
@@ -63,8 +61,6 @@ courtSchema.pre("save", async function (next) {
     next(err);
   }
 });
-
-
 
 const Courts = mongoose.model("Court", courtSchema);
 export default Courts;
