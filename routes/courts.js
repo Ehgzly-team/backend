@@ -22,11 +22,11 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-
+const bucket = getStorage().bucket();
 const router = express.Router();
 
 
-app.post('/upload', async (req, res) => {
+router.post('/upload', async (req, res) => {
   try {
     const fileName = req.query.name || 'uploaded_image.jpg';
     const buffer = req.body; // raw binary data
