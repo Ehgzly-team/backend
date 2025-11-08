@@ -14,6 +14,8 @@ const app = express();
 
 // APP Uses
 app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // increase limit if needed
+app.use(express.raw({ type: 'image/*', limit: '10mb' }));
 app.use("/api/users", userRoutes); // base of all users routes
 app.use("/api/courts", courtRoutes); // base of all courts routes
 app.use(cors({
