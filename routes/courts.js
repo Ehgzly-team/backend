@@ -1,8 +1,8 @@
 import express from "express";
-import multer from "multer";
 import admin from "firebase-admin";
 import { getStorage } from "firebase-admin/storage";
 import path from "path";
+import multerPkg from "multer";
 import courtModules from "../modules/court.js";
 import { readFileSync } from "fs";
 const serviceAccount = JSON.parse(
@@ -13,8 +13,9 @@ admin.initializeApp({credential:admin.credential.cert(serviceAccount),
   storageBucket:'ehgzly-76270.appspot.com'
 });
 
-const bucket =getStorage().bucket();
-const upload = multer({dest:"upload/"})
+const multer = multerPkg.default || multerPkg;
+const bucket = admin.storage ? admin.storage().bucket() : getStorage().bucket();
+const upload = multer({ dest: "upload/" });
 
 const router = express.Router();
 
