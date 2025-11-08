@@ -9,7 +9,7 @@ const bookingsSchema = new mongoose.Schema({
   times: { type: [] },
 });
 
-userSchema.pre("save", async function (next) {
+bookingsSchema.pre("save", async function (next) {
   if (!this.isNew) return next();
 
   try {

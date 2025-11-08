@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import userModules from "../modules/user.js";
 import { authenticateToken } from "../middlewares/auth.js";
-
+import bookingModules from "../modules/bookings.js";
+import courtModules from "../modules/court.js";
 const router = express.Router();
 const SECRET_KEY = "asdsadasdasd213414";
 
@@ -49,7 +50,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email ,role:user.role,},
+      { id: user._id, username: user.username, email: user.email ,role:user.role,},
       SECRET_KEY,
       { expiresIn: "12h" }
     );
@@ -61,6 +62,56 @@ router.post("/login", async (req, res) => {
     console.error(err);
     res.status(500).send({ msg: "Internal Server Error" });
   }
+});
+
+router.post("/add/booking", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+  const { courtId, date, times } = req.body;
+
+  if(!id) return res.status(400).send({ msg: "No User ID !!" });
+  if(!courtId) return res.status(400).send({ msg: "No Court ID !!" });
+  if(!date) return res.status(400).send({ msg: "No Booking Date !!" });
+  if(!times || times.length === 0) return res.status(400).send({ msg: "No Booking Times !!" });
+
+  const user = await userModules.findOne({ _id: id });;
+  if (!user) return res.status(400).send({ msg: "User Not Found !!" });
+  const booking = new bookingModules({ userId: id, courtId, bookingDate: date, times });
+  await booking.save();
+  user.bookings.push(booking._id);
+  await user.save();
+
+  // const docs = await bookingModules.find({});
+  // docs.forEach(bk => console.log(bk));
+
+  res.status(200).json(booking);
+
+});
+
+router.get("/bookings", authenticateToken, async (req, res) => {
+  const { id } = req.user;
+
+  if(!id) return res.status(400).send({ msg: "No User ID !!" });
+
+  const bookings = await bookingModules.find({ userId: id });
+
+  const data = await Promise.all(bookings.map(async (booking) => {
+  const court = await courtModules.findById(booking.courtId);
+  return {
+    id: booking._id,
+    date: booking.bookingDate,
+    times: booking.times,
+    court: {
+      id: court._id,
+      name: court.name,
+      location: court.location,
+      type: court.type,
+      pricePerHour: court.pricePerHour,
+      imagePath: court.image_path
+    }
+  };
+}));
+
+res.status(200).json(data);
 });
 
 router.get("/me", authenticateToken, (req, res) => {
