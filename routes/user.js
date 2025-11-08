@@ -113,7 +113,8 @@ router.get("/bookings", authenticateToken, async (req, res) => {
           name: court.name,
           location: court.location,
           type: court.type,
-          pricePerHour: court.pricePerHour
+          pricePerHour: court.pricePerHour,
+          imagePath: court.image_path
         } : null
       };
     }));
