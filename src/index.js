@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "../config/db.js";
 import userRoutes from "../routes/user.js";
+import courtRoutes from "../routes/courts.js";
 import cors from 'cors';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,6 +15,7 @@ const app = express();
 // APP Uses
 app.use(express.json());
 app.use("/api/users", userRoutes); // base of all users routes
+app.use("/api/courts", courtRoutes); // base of all courts routes
 app.use(cors({
   origin: '*' 
 }));
