@@ -23,12 +23,6 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadDir = path.join(__dirname, "..", "upload");
-const multer = multerPkg.default || multerPkg;
-const bucket = admin.storage ? admin.storage().bucket() : getStorage().bucket();
-const upload = multer({ dest: uploadDir });
 const router = express.Router();
 
 
