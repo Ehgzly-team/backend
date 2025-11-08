@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import Counter from "./counter.js";
-import { UserInfo } from "firebase-admin/auth";
 
 const bookingsSchema = new mongoose.Schema({
   _id: { type: String },
@@ -30,4 +29,4 @@ userSchema.pre("save", async function (next) {
 });
 
 const Bookings = mongoose.model("Bookings", bookingsSchema);
-export default User;
+export default Bookings;
