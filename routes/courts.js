@@ -54,7 +54,7 @@ router.get("/pagination", async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
     const courts = await courtModules.find(query).skip(skip).limit(limit);
-    res.json({ data: courts });
+    res.status(200).json({ data: courts });
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
