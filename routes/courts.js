@@ -85,6 +85,9 @@ router.post("/pagination/mycourts", authenticateToken, async (req, res) => {
 router.post("/add",async (req,res)=>{
 try{
  const {name,location,type,rate,pricePerHour,owner,image_path,bookings} = req.body;
+ if (!name || !location || !type || !rate || !pricePerHour || !owner || !image_path) {
+    return res.status(400).send({ msg: "Bad Request" });
+  }
  let court= new courtModules({name,location,type,rate,pricePerHour,owner,bookings,image_path})
  await court.save();
  return res.status(200).send({ msg: `Court Created with name ${court.name}!!` });
