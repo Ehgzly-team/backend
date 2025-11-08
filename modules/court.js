@@ -35,6 +35,10 @@ const courtSchema = new mongoose.Schema({
     bookings: {
         type: Array, 
         default: [] 
+    },
+    image_path:{
+      type: String,
+      required: true
     }
 });
 
