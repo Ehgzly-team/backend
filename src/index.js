@@ -21,6 +21,7 @@ app.use(cors({
 // Connect to DB
 connectDB();
 
+
 // Home route
 app.get("/", (req, res) => {
   res.send({ msg: "Hello Dude" });
