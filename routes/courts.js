@@ -85,7 +85,7 @@ router.post("/pagination/mycourts", authenticateToken, async (req, res) => {
 router.post("/add",async (req,res)=>{
 try{
  const {name,location,type,rate,pricePerHour,owner,image_path,bookings} = req.body;
- court= new courtModules({name,location,type,rate,pricePerHour,owner,bookings,image_path})
+ let court= new courtModules({name,location,type,rate,pricePerHour,owner,bookings,image_path})
  await court.save();
  return res.status(200).send({ msg: `Court Created with name ${court.name}!!` });
 }catch(err){
