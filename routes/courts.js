@@ -9,9 +9,6 @@ const serviceAccount = JSON.parse(
   readFileSync(new URL('../config/ehgzly.json', import.meta.url), 'utf8')
 );
 
-admin.initializeApp({credential:admin.credential.cert(serviceAccount),
-  storageBucket:'ehgzly-76270.appspot.com'
-});
 
 
 router.get("/pagination", async (req, res) => {
