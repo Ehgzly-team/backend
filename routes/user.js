@@ -87,32 +87,51 @@ router.post("/add/booking", authenticateToken, async (req, res) => {
 
 });
 
-router.get("/bookings", authenticateToken, async (req, res) => {
-  const { id } = req.user;
+rrouter.get("/bookings", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.user;
+    if (!id) return res.status(400).send({ msg: "No User ID !!" });
 
-  if(!id) return res.status(400).send({ msg: "No User ID !!" });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-  const bookings = await bookingModules.find({ userId: id });
+    const totalBookings = await bookingModules.countDocuments({ userId: id });
 
-  const data = await Promise.all(bookings.map(async (booking) => {
-  const court = await courtModules.findById(booking.courtId);
-  return {
-    id: booking._id,
-    date: booking.bookingDate,
-    times: booking.times,
-    court: {
-      id: court._id,
-      name: court.name,
-      location: court.location,
-      type: court.type,
-      pricePerHour: court.pricePerHour,
-      imagePath: court.image_path
-    }
-  };
-}));
+    const bookings = await bookingModules.find({ userId: id })
+      .skip(skip)
+      .limit(limit);
 
-res.status(200).json(data);
+    const data = await Promise.all(bookings.map(async (bk) => {
+      const court = await courtModules.findById(bk.courtId);
+      return {
+        bookingId: bk._id,
+        date: bk.bookingDate,
+        times: bk.times,
+        court: court ? {
+          id: court._id,
+          name: court.name,
+          location: court.location,
+          type: court.type,
+          pricePerHour: court.pricePerHour
+        } : null
+      };
+    }));
+
+    res.status(200).json({
+      page,
+      limit,
+      total: totalBookings,
+      totalPages: Math.ceil(totalBookings / limit),
+      data
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ msg: "Server Error", error: err.message });
+  }
 });
+
 
 router.get("/me", authenticateToken, (req, res) => {
   console.log("/me");
