@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     enum: ["owner", "user","admin"], 
     default: "user"
   },
+  owned_courts:{type : Array , default:[]},
   email: { type: String },
   favorites: { type: Array, default: [] },
   bookings: { type: Array, default: [] },
