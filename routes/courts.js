@@ -2,6 +2,8 @@ import express from "express";
 import admin from "firebase-admin";
 import { getStorage } from "firebase-admin/storage";
 import courtModules from "../modules/court.js";
+import userModules from "../modules/user.js";
+import { authenticateToken } from "../middlewares/auth.js";
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -49,6 +51,20 @@ router.get("/pagination", async (req, res) => {
   }
   const page=req.query.page;
   const limit=req.query.limit;
+
+  const skip = (page-1)*limit;
+  const courts = await courtModules.find(query).skip(skip).limit(limit);
+
+  res.json({data:courts})
+});
+
+router.post("/pagination/mycourts",authenticateToken, async (req, res) => {
+  const user = await userModules.findOne({_id:req.user.id})
+  query = {_id :{$in:user.bookings}};
+  const {page,limit,type}=req.body;
+  if (type != "all") {
+    query["type"] = type;
+  }
 
   const skip = (page-1)*limit;
   const courts = await courtModules.find(query).skip(skip).limit(limit);
