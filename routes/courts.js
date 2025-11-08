@@ -1,4 +1,4 @@
-import express from "express";
+import express, { query } from "express";
 import admin from "firebase-admin";
 import { getStorage } from "firebase-admin/storage";
 import courtModules from "../modules/court.js";
@@ -65,11 +65,14 @@ router.post("/pagination/mycourts",authenticateToken, async (req, res) => {
   if (type != "all") {
     query["type"] = type;
   }
-
+  if (courtModules.countDocuments(query)){
   const skip = (page-1)*limit;
   const courts = await courtModules.find(query).skip(skip).limit(limit);
 
-  res.json({data:courts})
+  res.json({data:courts})}
+  else{
+    res.json({data:[]});
+  }
 });
 
 router.post("/add",async (req,res)=>{
