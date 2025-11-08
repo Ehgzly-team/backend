@@ -87,7 +87,7 @@ router.post("/add/booking", authenticateToken, async (req, res) => {
 
 });
 
-router.post("/bookings", authenticateToken, async (req, res) => {
+router.get("/bookings", authenticateToken, async (req, res) => {
   const { id } = req.user;
 
   if(!id) return res.status(400).send({ msg: "No User ID !!" });
