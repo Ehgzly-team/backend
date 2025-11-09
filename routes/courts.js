@@ -4,6 +4,7 @@ import { getStorage } from "firebase-admin/storage";
 import courtModules from "../modules/court.js";
 import userModules from "../modules/user.js";
 import { authenticateToken } from "../middlewares/auth.js";
+import bookingModules from "../modules/bookings.js";
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -79,6 +80,39 @@ router.post("/pagination/mycourts", authenticateToken, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/times/:courtId", authenticateToken, async (req, res) => {
+  try {
+    const { courtId } = req.params;
+    const { date } = req.query;
+    if (!courtId) return res.status(400).send({ msg: "No Court ID !!" });
+    if (!date) return res.status(400).send({ msg: "No Booking Date !!" });
+
+    // Convert date string to Date object for comparison
+    const bookingDate = new Date(date);
+    bookingDate.setHours(0, 0, 0, 0); // Set time to start of day
+    
+    // Find all bookings for this court on the specified date
+    const bookings = await bookingModules.find({
+      courtId: courtId,
+      bookingDate: {
+        $gte: bookingDate,
+        $lt: new Date(bookingDate.getTime() + 24 * 60 * 60 * 1000) // Next day
+      }
+    });
+
+    // Extract all booked time slots
+    const bookedTimes = bookings.reduce((times, booking) => {
+      return times.concat(booking.times);
+    }, []);
+
+    res.status(200).json({ bookedTimes }["bookedTimes"]);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ msg: "Internal Server Error" });
   }
 });
 
