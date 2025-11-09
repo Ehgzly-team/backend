@@ -116,14 +116,18 @@ router.get("/times/:courtId", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("/add",async (req,res)=>{
+router.post("/add", authenticateToken, async (req,res)=>{
 try{
- const {name,location,type,rate,pricePerHour,owner,image_path,bookings} = req.body;
- if (!name || !location || !type || !rate || !pricePerHour || !owner || !image_path) {
+  let owner=req.user.id;
+ const {name,location,type,pricePerHour,image_path} = req.body;
+ if (!name || !location || !type || !pricePerHour || !owner || !image_path) {
     return res.status(400).send({ msg: "Bad Request" });
   }
- let court= new courtModules({name,location,type,rate,pricePerHour,owner,bookings,image_path})
- await court.save();
+ let court= new courtModules({name,location,type,pricePerHour,owner,image_path})
+ await court.save()
+ let user= await userModules.findOne({ _id: owner });
+ user.owned_courts.push(court._id);
+ await user.save();
  return res.status(200).send({ msg: `Court Created with name ${court.name}!!` });
 }catch(err){
   console.error(err);
