@@ -61,7 +61,7 @@ router.get("/pagination", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-router.post("/pagination/mycourts", authenticateToken, async (req, res) => {
+router.get("/pagination/mycourts", authenticateToken, async (req, res) => {
   try {
     const user = await userModules.findOne({ _id: req.user.id });
     const query = { _id: { $in: user.owned_courts } };
