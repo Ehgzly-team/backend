@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import connectDB from "../config/db.js";
 import userRoutes from "../routes/user.js";
 import courtRoutes from "../routes/courts.js";
-import uploadRoutes from"../routes/upload.js"
+// import uploadRoutes from"../routes/upload.js"
 import cors from 'cors';
 import { logger } from "../middlewares/logger.js";
 
