@@ -36,7 +36,7 @@ router.post('/upload', async (req, res) => {
     });
 
     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
-    res.json({ url: publicUrl });
+    res.status(200).json(publicUrl);
 
   } catch (err) {
     console.error(err);
