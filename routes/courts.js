@@ -44,6 +44,28 @@ router.get("/pagination/mycourts", authenticateToken, async (req, res) => {
   }
 });
 
+router.get("/pagination/fav", authenticateToken, async (req, res) => {
+  try {
+    const user = await userModules.findOne({ _id: req.user.id });
+    const query = { _id: { $in: user.favorites } };
+    const { page = 1, limit = 10, type = "all" } = req.body;
+    if (type != "all") {
+      query.type = type;
+    }
+    const total = await courtModules.countDocuments(query);
+    if (total) {
+      const skip = (page - 1) * limit;
+      const courts = await courtModules.find(query).skip(skip).limit(limit);
+      res.status(200).json({ data: courts });
+    } else {
+      res.status(200).json({ data: [] });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 router.get("/times/:courtId", authenticateToken, async (req, res) => {
   try {
     const { courtId } = req.params;
