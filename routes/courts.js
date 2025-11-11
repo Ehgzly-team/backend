@@ -86,11 +86,13 @@ router.get("/isFav",authenticateToken,async (req,res)=>{
   try{
   const user = await userModules.findOne({ _id: req.user.id });
     const { courtId } = req.body;
+    let isfav;
     if(user.favorites.includes(courtId)){
-      res.status(200).json(true);
+isfav=true;
     }else{
-      res.status(200).json(false);
+      isfav=false
     }
+    res.status(200).json(isfav);
   }catch (err) {
     console.error(err);
     res.status(500).send({ msg: "Internal Server Error" });
