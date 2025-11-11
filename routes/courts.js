@@ -53,13 +53,10 @@ router.get("/pagination/fav", authenticateToken, async (req, res) => {
       query.type = type;
     }
     const total = await courtModules.countDocuments(query);
-    if (total) {
       const skip = (page - 1) * limit;
       const courts = await courtModules.find(query).skip(skip).limit(limit);
+      console.log(courts);
       res.status(200).json({ data: courts });
-    } else {
-      res.status(200).json({ data: [] });
-    }
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
@@ -75,9 +72,13 @@ router.put("/toggle/fav", authenticateToken, async (req, res) => {
     }else{
       user.favorites.push(courtId);
     }
+    const result = await userModules.updateOne(
+      { _id: req.user.id }, // Filter
+      { $set: { favorites :user.favorites } }               // Update data
+    );
     res.status(200).json({msg:"toggled successfully"})
   } catch (err) {
-    console.error(err);
+    console.error(err); 
     res.status(500).send("Internal Server Error");
   }
 });
@@ -85,13 +86,15 @@ router.put("/toggle/fav", authenticateToken, async (req, res) => {
 router.get("/isFav",authenticateToken,async (req,res)=>{
   try{
   const user = await userModules.findOne({ _id: req.user.id });
-    const { courtId } = req.body;
+    const { courtId } = req.query;
+    console.log(courtId);
     let isfav;
     if(user.favorites.includes(courtId)){
-isfav=true;
+      isfav=true;
     }else{
       isfav=false
     }
+    console.log(isfav);
     res.status(200).json(isfav);
   }catch (err) {
     console.error(err);
