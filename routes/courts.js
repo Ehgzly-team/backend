@@ -66,6 +66,22 @@ router.get("/pagination/fav", authenticateToken, async (req, res) => {
   }
 });
 
+router.put("/toggle/fav", authenticateToken, async (req, res) => {
+  try {
+    const user = await userModules.findOne({ _id: req.user.id });
+    const { courtId } = req.body;
+    if(user.favorites.includes(courtId)){
+      user.favorites= user.favorites.filter(((cid)=>cid!=courtId))
+    }else{
+      user.favorites.push(courtId);
+    }
+    res.status(200).json({msg:"toggled successfully"})
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 router.get("/times/:courtId", authenticateToken, async (req, res) => {
   try {
     const { courtId } = req.params;
