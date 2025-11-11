@@ -15,7 +15,7 @@ router.get("/pagination", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    const courts = await courtModules.find(query).skip(skip).limit(limit);
+    const courts = await courtModules.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit);
     res.status(200).json({ data: courts });
   } catch (err) {
     console.error(err);
@@ -81,6 +81,22 @@ router.put("/toggle/fav", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+router.get("/isFav",authenticateToken,async (req,res)=>{
+  try{
+  const user = await userModules.findOne({ _id: req.user.id });
+    const { courtId } = req.body;
+    if(user.favorites.includes(courtId)){
+      res.status(200).json(true);
+    }else{
+      res.status(200).json(false);
+    }
+  }catch (err) {
+    console.error(err);
+    res.status(500).send({ msg: "Internal Server Error" });
+  }
+
+})
 
 router.get("/times/:courtId", authenticateToken, async (req, res) => {
   try {
