@@ -87,9 +87,9 @@ router.get("/isFav",authenticateToken,async (req,res)=>{
   const user = await userModules.findOne({ _id: req.user.id });
     const { courtId } = req.body;
     if(user.favorites.includes(courtId)){
-      res.status(200).json({"isfav":true});
+      res.status(200).json(true);
     }else{
-      res.status(200).json({"isfav":false});
+      res.status(200).json(false);
     }
   }catch (err) {
     console.error(err);
