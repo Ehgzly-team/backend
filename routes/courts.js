@@ -14,6 +14,10 @@ router.get("/pagination", async (req, res) => {
     }
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const subName = req.query.subName;
+    if(subName.trim){
+      query.name={$regex:subName ,$options:"i"}
+    }
     const skip = (page - 1) * limit;
     const courts = await courtModules.find(query).sort({ _id: -1 }).skip(skip).limit(limit);
     res.status(200).json({ data: courts });
