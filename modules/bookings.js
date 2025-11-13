@@ -5,7 +5,7 @@ const bookingsSchema = new mongoose.Schema({
   _id: { type: String },
   userId: { type: String },
   courtId: { type: String },
-  bookingDate: { type: Date },
+  bookingDate: { type: String },
   times: { type: [] },
 });
 
