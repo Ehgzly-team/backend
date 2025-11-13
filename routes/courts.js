@@ -127,6 +127,8 @@ router.get("/times/:courtId", authenticateToken, async (req, res) => {
       }
     });
 
+    console.log("Testing backend")
+
     // Extract all booked time slots
     const bookedTimes = bookings.reduce((times, booking) => {
       return times.concat(booking.times);

@@ -75,7 +75,7 @@ router.post("/add/booking", authenticateToken, async (req, res) => {
 
   const user = await userModules.findOne({ _id: id });;
   if (!user) return res.status(400).send({ msg: "User Not Found !!" });
-  const booking = new bookingModules({ userId: id, courtId, bookingDate: date, times });
+  const booking = await bookingModules.create({ userId: id, courtId, bookingDate: date, times });
   await booking.save();
   user.bookings.push(booking._id);
   await user.save();
