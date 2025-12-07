@@ -4,15 +4,15 @@ import Counter from "./counter.js";
 // User Data Structure
 const userSchema = new mongoose.Schema({
   _id: { type: String },
-  username: { type: String },
-  password: { type: String },
+  username: { type: String,required:true },
+  password: { type: String,required:true },
   role: { 
     type: String, 
     enum: ["owner", "user","admin"], 
     default: "user"
   },
   owned_courts:{type : Array , default:[]},
-  email: { type: String },
+  email: { type: String,required:true },
   favorites: { type: Array, default: [] },
   bookings: { type: Array, default: [] },
 });
