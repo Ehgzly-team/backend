@@ -3,9 +3,9 @@ import Counter from "./counter.js";
 
 const bookingsSchema = new mongoose.Schema({
   _id: { type: String },
-  userId: { type: String },
-  courtId: { type: String },
-  bookingDate: { type: String },
+  userId: { type: String ,required:true},
+  courtId: { type: String ,required:true},
+  bookingDate: { type: String ,required:true},
   times: { type: [] },
 });
 

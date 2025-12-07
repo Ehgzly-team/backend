@@ -2,7 +2,9 @@ import express from "express";
 import courtModules from "../modules/court.js";
 import userModules from "../modules/user.js";
 import { authenticateToken } from "../middlewares/auth.js";
+import { validate } from "../middlewares/validator.js";
 import bookingModules from "../modules/bookings.js";
+import { courtValidation } from "../validation/courts.validation.js";
 
 const router = express.Router();
 
@@ -142,13 +144,13 @@ router.get("/times/:courtId", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("/add", authenticateToken, async (req,res)=>{
+router.post("/add",validate(courtValidation), authenticateToken, async (req,res)=>{
 try{
   let owner=req.user.id;
  const {name,location,type,pricePerHour,image_path} = req.body;
- if (!name || !location || !type || !pricePerHour || !owner || !image_path) {
-    return res.status(400).send({ msg: "Bad Request" });
-  }
+//  if (!name || !location || !type || !pricePerHour || !owner || !image_path) {
+//     return res.status(400).send({ msg: "Bad Request" });
+//   }
  let court= new courtModules({name,location,type,pricePerHour,owner,image_path})
  await court.save()
  let user= await userModules.findOne({ _id: owner });

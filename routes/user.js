@@ -3,21 +3,25 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import userModules from "../modules/user.js";
 import { authenticateToken } from "../middlewares/auth.js";
+import { validate } from "../middlewares/validator.js";
 import bookingModules from "../modules/bookings.js";
 import courtModules from "../modules/court.js";
+import { userValidation } from "../validation/user.validation.js";
+import { bookingValidation } from "../validation/booking.validation.js";
+
 const router = express.Router();
 const SECRET_KEY = "asdsadasdasd213414";
 
 
-router.post("/add", async (req, res) => {
+router.post("/add", validate(userValidation),async (req, res) => {
   try {
     const { username, password, email, role} = req.body;
 
     if (!req.body) return res.status(400).send({ msg: "No Body Sent !!" });
-    if (!username) return res.status(400).send({ msg: "No Username !!" });
-    if (!password) return res.status(400).send({ msg: "No Password !!" });
-    if (!email) return res.status(400).send({ msg: "No Email !!" });
-    if (!role) return res.status(400).send({ msg: "No Role !!" });
+    // if (!username) return res.status(400).send({ msg: "No Username !!" });
+    // if (!password) return res.status(400).send({ msg: "No Password !!" });
+    // if (!email) return res.status(400).send({ msg: "No Email !!" });
+    // if (!role) return res.status(400).send({ msg: "No Role !!" });
 
 
     let user = await userModules.findOne({ email });
@@ -64,14 +68,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/add/booking", authenticateToken, async (req, res) => {
+router.post("/add/booking",validate(bookingValidation), authenticateToken, async (req, res) => {
   const { id } = req.user;
   const { courtId, date, times } = req.body;
 
-  if(!id) return res.status(400).send({ msg: "No User ID !!" });
-  if(!courtId) return res.status(400).send({ msg: "No Court ID !!" });
-  if(!date) return res.status(400).send({ msg: "No Booking Date !!" });
-  if(!times || times.length === 0) return res.status(400).send({ msg: "No Booking Times !!" });
+  // if(!id) return res.status(400).send({ msg: "No User ID !!" });
+  // if(!courtId) return res.status(400).send({ msg: "No Court ID !!" });
+  // if(!date) return res.status(400).send({ msg: "No Booking Date !!" });
+  // if(!times || times.length === 0) return res.status(400).send({ msg: "No Booking Times !!" });
 
   const user = await userModules.findOne({ _id: id });;
   if (!user) return res.status(400).send({ msg: "User Not Found !!" });
