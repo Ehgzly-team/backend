@@ -6,6 +6,7 @@ import { authenticateToken } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validator.js";
 import bookingModules from "../modules/bookings.js";
 import courtModules from "../modules/court.js";
+import { asyncHandler } from "../middlewares/errorHandler.js";
 import { userValidation } from "../validation/user.validation.js";
 import { bookingValidation } from "../validation/booking.validation.js";
 
@@ -13,17 +14,9 @@ const router = express.Router();
 const SECRET_KEY = "asdsadasdasd213414";
 
 
-router.post("/add", validate(userValidation),async (req, res) => {
-  try {
+router.post("/add", validate(userValidation), asyncHandler(async (req, res) => {
     const { username, password, email, role} = req.body;
-
     if (!req.body) return res.status(400).send({ msg: "No Body Sent !!" });
-    // if (!username) return res.status(400).send({ msg: "No Username !!" });
-    // if (!password) return res.status(400).send({ msg: "No Password !!" });
-    // if (!email) return res.status(400).send({ msg: "No Email !!" });
-    // if (!role) return res.status(400).send({ msg: "No Role !!" });
-
-
     let user = await userModules.findOne({ email });
     if(user) return res.status(401).send({ msg: "User Already Exists !!" });
 
@@ -31,15 +24,10 @@ router.post("/add", validate(userValidation),async (req, res) => {
     await user.save();
     
     return res.status(200).send({ msg: `User Created with name ${user.username}!!` });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ msg: "Internal Server Error" });
-  }
-});
+}));
 
 // Login Route
-router.post("/login", async (req, res) => {
-  try {
+router.post("/login", asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     if (!req.body) return res.status(400).send({ msg: "No Body Sent !!" });
@@ -58,17 +46,12 @@ router.post("/login", async (req, res) => {
       SECRET_KEY,
       { expiresIn: "12h" }
     );
-
-
+    
     res.status(200).json({ token });
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ msg: "Internal Server Error" });
-  }
-});
+}));
 
-router.post("/add/booking",validate(bookingValidation), authenticateToken, async (req, res) => {
+router.post("/add/booking",validate(bookingValidation), authenticateToken, asyncHandler(async (req, res) => {
   const { id } = req.user;
   const { courtId, date, times } = req.body;
 
@@ -89,10 +72,9 @@ router.post("/add/booking",validate(bookingValidation), authenticateToken, async
 
   res.status(200).json(booking);
 
-});
+}));
 
-router.get("/bookings", authenticateToken, async (req, res) => {
-  try {
+router.get("/bookings", authenticateToken, asyncHandler(async (req, res) => {
     const { id } = req.user;
     if (!id) return res.status(400).send({ msg: "No User ID !!" });
 
@@ -131,11 +113,7 @@ router.get("/bookings", authenticateToken, async (req, res) => {
       data
     });
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ msg: "Server Error", error: err.message });
-  }
-});
+}));
 
 
 router.get("/me", authenticateToken, (req, res) => {
@@ -148,16 +126,9 @@ router.get("/me", authenticateToken, (req, res) => {
   });
 });
 
-
-
-router.get("/all", async (req, res) => {
-  try {
-    const users = await userModules.find();
-    res.status(200).send(users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ msg: "Internal Server Error" });
-  }
-});
+router.get("/all", asyncHandler(async (req, res) => {
+  const users = await userModules.find();
+  res.status(200).send(users);
+}));
 
 export default router;

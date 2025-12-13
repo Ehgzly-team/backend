@@ -5,10 +5,11 @@ import { authenticateToken } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validator.js";
 import bookingModules from "../modules/bookings.js";
 import { courtValidation } from "../validation/courts.validation.js";
+import { asyncHandler } from "../middlewares/errorHandler.js";
 
 const router = express.Router();
 
-router.get("/pagination", async (req, res) => {
+router.get("/pagination", asyncHandler(async (req, res) => {
   try {
     const query = {};
     if (req.query.type != "all") {
@@ -27,8 +28,8 @@ router.get("/pagination", async (req, res) => {
     console.error(err);
     res.status(500).send("Internal Server Error");
   }
-});
-router.get("/pagination/mycourts", authenticateToken, async (req, res) => {
+}));
+router.get("/pagination/mycourts", authenticateToken, asyncHandler(async (req, res) => {
   try {
     const user = await userModules.findOne({ _id: req.user.id });
     const query = { _id: { $in: user.owned_courts } };
@@ -48,9 +49,9 @@ router.get("/pagination/mycourts", authenticateToken, async (req, res) => {
     console.error(err);
     res.status(500).send("Internal Server Error");
   }
-});
+}));
 
-router.get("/pagination/fav", authenticateToken, async (req, res) => {
+router.get("/pagination/fav", authenticateToken, asyncHandler(async (req, res) => {
   try {
     const user = await userModules.findOne({ _id: req.user.id });
     const query = { _id: { $in: user.favorites } };
@@ -67,9 +68,9 @@ router.get("/pagination/fav", authenticateToken, async (req, res) => {
     console.error(err);
     res.status(500).send("Internal Server Error");
   }
-});
+}));
 
-router.put("/toggle/fav", authenticateToken, async (req, res) => {
+router.put("/toggle/fav", authenticateToken, asyncHandler(async (req, res) => {
   try {
     const user = await userModules.findOne({ _id: req.user.id });
     const { courtId } = req.body;
@@ -87,9 +88,9 @@ router.put("/toggle/fav", authenticateToken, async (req, res) => {
     console.error(err); 
     res.status(500).send("Internal Server Error");
   }
-});
+}));
 
-router.get("/isFav",authenticateToken,async (req,res)=>{
+router.get("/isFav",authenticateToken,asyncHandler(async (req,res)=>{
   try{
   const user = await userModules.findOne({ _id: req.user.id });
     const { courtId } = req.query;
@@ -107,9 +108,9 @@ router.get("/isFav",authenticateToken,async (req,res)=>{
     res.status(500).send({ msg: "Internal Server Error" });
   }
 
-})
+}))
 
-router.get("/times/:courtId", authenticateToken, async (req, res) => {
+router.get("/times/:courtId", authenticateToken, asyncHandler(async (req, res) => {
   try {
     const { courtId } = req.params;
     const { date } = req.query;
@@ -142,9 +143,9 @@ router.get("/times/:courtId", authenticateToken, async (req, res) => {
     console.error(err);
     res.status(500).send({ msg: "Internal Server Error" });
   }
-});
+}));
 
-router.post("/add",validate(courtValidation), authenticateToken, async (req,res)=>{
+router.post("/add",validate(courtValidation), authenticateToken, asyncHandler(async (req,res)=>{
 try{
   let owner=req.user.id;
  const {name,location,type,pricePerHour,image_path} = req.body;
@@ -161,7 +162,7 @@ try{
   console.error(err);
     res.status(500).send({ msg: "Internal Server Error" });
 }
-});
+}));
 
 
 export default router;

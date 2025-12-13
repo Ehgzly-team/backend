@@ -7,6 +7,7 @@ import courtRoutes from "../routes/courts.js";
 // import uploadRoutes from"../routes/upload.js"
 import cors from 'cors';
 import { logger } from "../middlewares/logger.js";
+import { errorHandler } from "../middlewares/errorHandler.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +27,9 @@ app.use(cors({
   origin: '*' 
 }));
 
+// Global error handler
+app.use(errorHandler);
+
 // Connect to DB
 connectDB();
 
@@ -37,5 +41,15 @@ app.get("/", (req, res) => {
 
 // Start listening
 app.listen(PORT, "0.0.0.0", () => console.log(`Listening on ${PORT}`));
+
+// Prevent the process from crashing on unhandled errors.
+// We log them and keep the process running to satisfy "not ever crash" requirement.
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 export default app;
